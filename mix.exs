@@ -20,7 +20,7 @@ defmodule NFLRushing.MixProject do
   def application do
     [
       mod: {NFLRushing.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :os_mon]
     ]
   end
 
