@@ -23,6 +23,7 @@ defmodule NFLRushingWeb do
 
       import Plug.Conn
       import NFLRushingWeb.Gettext
+
       alias NFLRushingWeb.Router.Helpers, as: Routes
     end
   end
