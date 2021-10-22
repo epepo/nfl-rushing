@@ -10,7 +10,10 @@ defmodule NFLRushing.MixProject do
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      dialyzer: [
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
+      ]
     ]
   end
 
@@ -52,7 +55,7 @@ defmodule NFLRushing.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      lint: ["format --check-formatted", "credo", "dialyzer"],
+      lint: ["format --check-formatted", "credo", "dialyzer --no-check"],
       "assets.deploy": [
         "cmd --cd assets npm run deploy",
         "esbuild default --minify",

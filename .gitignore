@@ -32,3 +32,6 @@ nfl_rushing-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Ignore dialyzer's PLT files
+/priv/plts/*.plt
+/priv/plts/*.plt.hash
