@@ -1,0 +1,76 @@
+name: CI
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: postgres:11
+        ports: ['5432:5432']
+        env:
+          POSTGRES_USER: 'postgres'
+          POSTGRES_PASSWORD: 'postgres'
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Cancel ongoing runs
+        if: ${{ !env.ACT }}
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v2
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: 24.1
+          elixir-version: 1.12
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.17
+
+      - name: Restore mix cache
+        uses: actions/cache@v2
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+      - name: Restore dialyzer cache
+        id: dialyzer-cache
+        uses: actions/cache@v2
+        with:
+          path: priv/plts
+          key: ${{ runner.os }}-dialyzer-${{ hashFiles('**/.tool-versions') }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-dialyzer-${{ hashFiles('**/.tool-versions') }}-
+            ${{ runner.os }}-dialyzer-
+      - name: Restore npm cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/assets/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Fetch mix dependencies
+        run: mix deps.get
+      - name: Generate dialyzer PLT
+        if: steps.dialyzer-cache.outputs.cache-hit != 'true'
+        run: mix dialyzer -- plt
+      - name: Fetch npm dependencies
+        run: npm ci --prefix=assets
+
+      - name: Run linters
+        run: mix lint
+      - name: Test build
+        env:
+          MIX_ENV: test
+        run: mix compile --warnings-as-errors
+      - name: Run tests
+        run: mix test --slowest 10

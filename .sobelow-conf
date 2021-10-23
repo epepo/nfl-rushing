@@ -1,0 +1,13 @@
+[
+  verbose: false,
+  private: true,
+  skip: false,
+  router: "",
+  exit: "low",
+  format: "compact",
+  out: "",
+  threshold: "low",
+  # TODO: Set up HTTPS on `config/prod.exs`
+  ignore: ["Config.HTTPS"],
+  ignore_files: [""]
+]
