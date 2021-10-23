@@ -45,7 +45,8 @@ defmodule NFLRushing.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
+      {:sobelow, "~> 0.11.1", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -55,7 +56,7 @@ defmodule NFLRushing.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      lint: ["format --check-formatted", "credo", "dialyzer --no-check"],
+      lint: ["format --check-formatted", "credo", "sobelow --config", "dialyzer --no-check"],
       "assets.deploy": [
         "cmd --cd assets npm run deploy",
         "esbuild default --minify",
