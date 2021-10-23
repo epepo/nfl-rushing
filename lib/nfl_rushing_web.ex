@@ -1,9 +1,9 @@
 defmodule NFLRushingWeb do
   @moduledoc """
-  The entrypoint for defining your web interface, such
+  The entrypoint for defining our web interface, such
   as controllers, views, channels and so on.
 
-  This can be used in your application as:
+  This can be used in the application as:
 
       use NFLRushingWeb, :controller
       use NFLRushingWeb, :view
@@ -38,7 +38,6 @@ defmodule NFLRushingWeb do
       import Phoenix.Controller,
         only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
 
-      # Include shared imports and aliases for views
       unquote(view_helpers())
     end
   end
@@ -79,17 +78,14 @@ defmodule NFLRushingWeb do
 
   defp view_helpers do
     quote do
-      # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      # Import LiveView and .heex helpers (live_render, live_patch, <.form>, etc)
       import Phoenix.LiveView.Helpers
-
-      # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
       import NFLRushingWeb.ErrorHelpers
       import NFLRushingWeb.Gettext
+
       alias NFLRushingWeb.Router.Helpers, as: Routes
     end
   end

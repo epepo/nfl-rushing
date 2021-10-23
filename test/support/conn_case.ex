@@ -9,8 +9,8 @@ defmodule NFLRushingWeb.ConnCase do
 
   Finally, if the test case interacts with the database,
   we enable the SQL sandbox, so changes done to the database
-  are reverted at the end of every test. If you are using
-  PostgreSQL, you can even run database tests asynchronously
+  are reverted at the end of every test. Since we are using
+  PostgreSQL, we can even run database tests asynchronously
   by setting `use NFLRushingWeb.ConnCase, async: true`, although
   this option is not recommended for other databases.
   """
@@ -21,14 +21,14 @@ defmodule NFLRushingWeb.ConnCase do
 
   using do
     quote do
-      # Import conveniences for testing with connections
       import Plug.Conn
+
       import Phoenix.ConnTest
+
       import NFLRushingWeb.ConnCase
 
       alias NFLRushingWeb.Router.Helpers, as: Routes
 
-      # The default endpoint for testing
       @endpoint NFLRushingWeb.Endpoint
     end
   end

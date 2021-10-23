@@ -1,6 +1,5 @@
 import Config
 
-# Configure your database
 config :nfl_rushing, NFLRushing.Repo,
   username: "postgres",
   password: "postgres",
@@ -9,22 +8,13 @@ config :nfl_rushing, NFLRushing.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-# For development, we disable any cache and enable
-# debugging and code reloading.
-#
-# The watchers configuration can be used to run external
-# watchers to your application. For example, we use it
-# with esbuild to bundle .js and .css sources.
 config :nfl_rushing, NFLRushingWeb.Endpoint,
-  # Binding to loopback ipv4 address prevents access from other machines.
-  # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: {0, 0, 0, 0}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: "WT0Ez4hubn9tz9NLrutTQbp1mXkUIm+UpU9lzvhitoradI+6hTi+ChhVUXg6Ywak",
   watchers: [
-    # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
     npx: [
       "tailwindcss",
@@ -60,7 +50,6 @@ config :nfl_rushing, NFLRushingWeb.Endpoint,
 # configured to run both http and https servers on
 # different ports.
 
-# Watch static and templates for browser reloading.
 config :nfl_rushing, NFLRushingWeb.Endpoint,
   live_reload: [
     patterns: [
@@ -71,12 +60,8 @@ config :nfl_rushing, NFLRushingWeb.Endpoint,
     ]
   ]
 
-# Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
-# Set a higher stacktrace during development. Avoid configuring such
-# in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-# Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
