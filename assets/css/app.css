@@ -1,35 +1,32 @@
 @tailwind base;
+
 @tailwind components;
+
+@layer components {
+  .alert {
+    @apply p-2 mb-2 border-2 rounded;
+  }
+
+  .alert:empty {
+    @apply hidden;
+  }
+
+  .alert-info {
+    @apply text-[#31708f] bg-[#d9edf7] border-[#bce8f1];
+  }
+
+  .alert-warning {
+    @apply text-[#8a6d3b] bg-[#fcf8e3] border-[#faebcc];
+  }
+
+  .alert-error {
+    @apply text-[#a94442] bg-[#f3dede] border-[#ebccd1];
+  }
+};
+
 @tailwind utilities;
 
 /* Alerts and form errors used by phx.new */
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-.alert-info {
-  color: #31708f;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-}
-.alert-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
-}
-.alert-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-}
-.alert p {
-  margin-bottom: 0;
-}
-.alert:empty {
-  display: none;
-}
 .invalid-feedback {
   color: #a94442;
   display: block;
