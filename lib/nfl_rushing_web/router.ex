@@ -26,7 +26,10 @@ defmodule NFLRushingWeb.Router do
 
     scope "/" do
       pipe_through :browser
-      live_dashboard "/dashboard", metrics: NFLRushingWeb.Telemetry
+
+      live_dashboard "/dashboard",
+        metrics: NFLRushingWeb.Telemetry,
+        ecto_repos: [NFLRushing.Repo]
     end
   end
 end
