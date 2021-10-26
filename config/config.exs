@@ -5,6 +5,8 @@ config :nfl_rushing,
   ecto_repos: [NFLRushing.Repo],
   generators: [binary_id: true]
 
+config :nfl_rushing, NFLRushing.Repo, migration_timestamps: [type: :utc_datetime_usec]
+
 config :nfl_rushing, NFLRushingWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [view: NFLRushingWeb.ErrorView, accepts: ~w(html json), layout: false],
