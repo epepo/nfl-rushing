@@ -11,5 +11,12 @@ defmodule NFLRushing.StatsTest do
 
       assert Stats.list_entries() == [entry]
     end
+
+    test "allows filtering by player name" do
+      entry_fixture(player: "First Guy")
+      target_entry = entry_fixture(player: "Second Dude")
+
+      assert Stats.list_entries(filters: %{player: "dude"}) == [target_entry]
+    end
   end
 end
