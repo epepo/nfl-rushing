@@ -1,12 +1,36 @@
 @tailwind base;
 
 @layer base {
+  table {
+    @apply w-full min-w-max;
+  }
+
   thead {
     @apply border-b-2 border-black;
   }
 
-  th {
+  th:first-child, td:first-child {
     @apply text-left;
+  }
+
+  th {
+    @apply text-right;
+  }
+
+  tr {
+    @apply border-b border-gray-200;
+  }
+
+  td {
+    @apply px-3 text-right;
+  }
+
+  tbody tr:hover {
+    @apply bg-gray-200;
+  }
+
+  button {
+    @apply rounded bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4;
   }
 }
 

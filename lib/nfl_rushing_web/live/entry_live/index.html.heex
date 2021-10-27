@@ -1,14 +1,13 @@
-<section class="flex flex-col w-full overflow-x-auto gap-2">
-  <.form let={f} for={:filters} class="flex justify-end gap-2">
-    <div class="flex items-center gap-2">
-      <%= label f, :player %>
-      <%= text_input f, :player %>
-    </div>
+<section class="flex flex-col w-full gap-2">
+  <section class="flex justify-between gap-2">
+    <.form let={f} for={:filters} phx-change="update_filters" class="flex items-center gap-2">
+      <%= text_input f, :player, placeholder: "Find player" %>
+    </.form>
 
-    <button type="submit">Export</button>
-  </.form>
+    <button phx-click="export">Export</button>
+  </section>
 
-  <table class="w-full">
+  <table>
     <thead>
       <tr>
         <th>Player</th>
