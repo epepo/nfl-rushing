@@ -1,7 +1,7 @@
 <section class="flex flex-col w-full gap-2">
   <section class="flex justify-between gap-2">
-    <.form let={f} for={:filters} phx-change="update_filters" class="flex items-center gap-2">
-      <%= text_input f, :player, placeholder: "Find player" %>
+    <.form id="filters" let={f} for={:filters} phx-change="update_filters" class="flex items-center gap-2">
+      <%= text_input f, :player, placeholder: "Find player", value: @player_filter %>
     </.form>
 
     <button phx-click="export">Export</button>
