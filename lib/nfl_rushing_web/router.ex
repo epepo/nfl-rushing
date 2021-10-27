@@ -18,7 +18,7 @@ defmodule NFLRushingWeb.Router do
   scope "/", NFLRushingWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", EntryLive.Index, :index
   end
 
   if Mix.env() in [:dev, :test] do
