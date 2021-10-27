@@ -9,7 +9,7 @@ defmodule NFLRushingWeb.Telemetry do
     Supervisor.start_link(__MODULE__, arg, name: __MODULE__)
   end
 
-  @impl Supervisor
+  @impl true
   def init(_arg) do
     children = [
       {:telemetry_poller, measurements: periodic_measurements(), period: 10_000}

@@ -1,7 +1,9 @@
-data =
-  [__DIR__, "rushing.json"]
-  |> Path.join()
-  |> File.read!()
-  |> Jason.decode!()
+alias NFLRushing.Repo
+alias NFLRushing.Importer
 
-IO.puts("Found #{length(data)} seed entries.")
+[__DIR__, "rushing.json"]
+|> Path.join()
+|> File.read!()
+|> Jason.decode!()
+|> Enum.map(&Importer.parse_entry!/1)
+|> Enum.each(&Repo.insert!(&1, on_conflict: :nothing))

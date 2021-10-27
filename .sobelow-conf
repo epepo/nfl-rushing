@@ -8,6 +8,7 @@
   out: "",
   threshold: "low",
   # TODO: Set up HTTPS on `config/prod.exs`
-  ignore: ["Config.HTTPS"],
+  # TODO: Figure out proper CSP headers
+  ignore: ["Config.HTTPS", "Config.CSP"],
   ignore_files: [""]
 ]

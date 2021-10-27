@@ -34,7 +34,6 @@ defmodule NFLRushingWeb do
         root: "lib/nfl_rushing_web/templates",
         namespace: NFLRushingWeb
 
-      # Import convenience functions from controllers
       import Phoenix.Controller,
         only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
 
@@ -64,6 +63,7 @@ defmodule NFLRushingWeb do
       use Phoenix.Router
 
       import Plug.Conn
+
       import Phoenix.Controller
       import Phoenix.LiveView.Router
     end
@@ -72,6 +72,7 @@ defmodule NFLRushingWeb do
   def channel do
     quote do
       use Phoenix.Channel
+
       import NFLRushingWeb.Gettext
     end
   end

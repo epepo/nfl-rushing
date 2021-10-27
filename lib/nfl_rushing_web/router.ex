@@ -5,9 +5,10 @@ defmodule NFLRushingWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {NFLRushingWeb.LayoutView, :root}
     plug :protect_from_forgery
-    plug :put_secure_browser_headers, %{"content-security-policy" => "default-src 'self'"}
+    plug :put_secure_browser_headers
+
+    plug :put_root_layout, {NFLRushingWeb.LayoutView, :root}
   end
 
   pipeline :api do
@@ -17,7 +18,7 @@ defmodule NFLRushingWeb.Router do
   scope "/", NFLRushingWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", EntryLive.Index, :index
   end
 
   if Mix.env() in [:dev, :test] do
@@ -25,7 +26,10 @@ defmodule NFLRushingWeb.Router do
 
     scope "/" do
       pipe_through :browser
-      live_dashboard "/dashboard", metrics: NFLRushingWeb.Telemetry
+
+      live_dashboard "/dashboard",
+        metrics: NFLRushingWeb.Telemetry,
+        ecto_repos: [NFLRushing.Repo]
     end
   end
 end
