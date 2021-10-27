@@ -1,4 +1,5 @@
-alias NFLRushing.{Repo, Importer}
+alias NFLRushing.Repo
+alias NFLRushing.Importer
 
 [__DIR__, "rushing.json"]
 |> Path.join()

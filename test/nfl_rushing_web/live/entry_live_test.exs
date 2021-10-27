@@ -4,7 +4,7 @@ defmodule NFLRushingWeb.EntryLiveTest do
   import Phoenix.LiveViewTest
   import NFLRushing.StatsFixtures
 
-  defp create_entry(_) do
+  defp create_entry(_context) do
     entry = entry_fixture()
 
     %{entry: entry}
