@@ -20,6 +20,7 @@ defmodule NFLRushingWeb.EntryLive.Index do
     %{name: :rushing_average_yards_per_attempt, text: "Avg"},
     %{name: :rushing_yards_per_game, text: "Yds/G"},
     %{name: :total_rushing_touchdowns, text: "TD"},
+    %{name: :longest_rush, text: "Lng"},
     %{name: :rushing_first_downs, text: "1st"},
     %{name: :rushing_first_downs_percentage, text: "1st%"},
     %{name: :rushing_20_plus_yards_each, text: "20+"},
