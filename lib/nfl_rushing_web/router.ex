@@ -19,6 +19,7 @@ defmodule NFLRushingWeb.Router do
     pipe_through :browser
 
     live "/", EntryLive.Index, :index
+    get "/export", ExportController, :show
   end
 
   if Mix.env() in [:dev, :test] do
