@@ -29,7 +29,7 @@ defmodule NFLRushing.Stats do
   end
 
   defp apply_filters(query, filters) do
-    for {key, value} <- filters, reduce: query do
+    for {key, value} <- filters, value != "", reduce: query do
       query ->
         where(
           query,
