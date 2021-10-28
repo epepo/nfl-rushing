@@ -1,51 +1,26 @@
-<section class="flex flex-col w-full overflow-x-auto gap-2">
-  <.form let={f} for={:filters} class="flex justify-end gap-2">
-    <div class="flex items-center gap-2">
-      <%= label f, :player %>
-      <%= text_input f, :player %>
-    </div>
+<section class="flex flex-col w-full gap-2">
+  <section class="flex justify-between gap-2">
+    <.form id="filters" let={f} for={:filters} phx-change="update_filters" class="flex items-center gap-2">
+      <%= text_input f, :player, placeholder: "Find player", value: @player_filter %>
+    </.form>
 
-    <button type="submit">Export</button>
-  </.form>
+    <button phx-click="export">Export</button>
+  </section>
 
-  <table class="w-full">
+  <table>
     <thead>
       <tr>
-        <th>Player</th>
-        <th>Team</th>
-        <th>Pos</th>
-        <th>Att/G</th>
-        <th>Att</th>
-        <th>Yds</th>
-        <th>Avg</th>
-        <th>Yds/G</th>
-        <th>TD</th>
-        <th>Lng</th>
-        <th>1st</th>
-        <th>1st%</th>
-        <th>20+</th>
-        <th>40+</th>
-        <th>FUM</th>
+        <%= for %{name: name, text: text} <- @columns do %>
+          <th><span class="cursor-pointer" phx-click="order_by" phx-value-column={name}><%= text %> <%= sort_indicator(name, @order_by) %></span></th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
-      <%= for entry <- @entries do %>
+      <%= for row <- @rows do %>
         <tr>
-          <td><%= entry.player %></td>
-          <td><%= entry.team %></td>
-          <td><%= entry.position %></td>
-          <td><%= entry.rushing_attempts_per_game_average %></td>
-          <td><%= entry.rushing_attempts %></td>
-          <td><%= entry.total_rushing_yards %></td>
-          <td><%= entry.rushing_average_yards_per_attempt %></td>
-          <td><%= entry.rushing_yards_per_game %></td>
-          <td><%= entry.total_rushing_touchdowns %></td>
-          <td><%= entry.longest_rush %><%= if(entry.touchdown_on_longest_rush, do: "T") %></td>
-          <td><%= entry.rushing_first_downs %></td>
-          <td><%= entry.rushing_first_downs_percentage %></td>
-          <td><%= entry.rushing_20_plus_yards_each %></td>
-          <td><%= entry.rushing_40_plus_yards_each %></td>
-          <td><%= entry.rushing_fumbles %></td>
+          <%= for data <- row do %>
+            <td><%= data %></td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>
