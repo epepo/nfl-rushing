@@ -15,27 +15,35 @@ defmodule NFLRushing.StatsFixtures do
       Enum.into(
         attrs,
         %{
-          player: "Some Player",
-          position: "POS",
-          team: "TEAM",
-          rushing_attempts_per_game_average: 1.1,
-          rushing_attempts: 2,
-          total_rushing_yards: 3.3,
-          rushing_average_yards_per_attempt: 4.4,
-          rushing_yards_per_game: 5.5,
-          total_rushing_touchdowns: 6,
-          longest_rush: 7.7,
+          player: Faker.Person.name(),
+          position: Enum.random(["RB", "QB", "SS", "K", "NT", "FB", "P", "WR", "DB", "TE"]),
+          team: Faker.Team.name(),
+          rushing_attempts_per_game_average: random_float(),
+          rushing_attempts: random_int(),
+          total_rushing_yards: random_float(),
+          rushing_average_yards_per_attempt: random_float(),
+          rushing_yards_per_game: random_float(),
+          total_rushing_touchdowns: random_int(),
+          longest_rush: random_float(),
           touchdown_on_longest_rush: true,
-          rushing_first_downs: 9,
-          rushing_first_downs_percentage: 10.10,
-          rushing_20_plus_yards_each: 11,
-          rushing_40_plus_yards_each: 12,
-          rushing_fumbles: 13
+          rushing_first_downs: random_int(),
+          rushing_first_downs_percentage: random_float(),
+          rushing_20_plus_yards_each: random_int(),
+          rushing_40_plus_yards_each: random_int(),
+          rushing_fumbles: random_int()
         }
       )
 
     %Entry{}
     |> Entry.changeset(data)
     |> Repo.insert!()
+  end
+
+  defp random_float do
+    random_int() + Enum.random(0..9) / 10
+  end
+
+  defp random_int do
+    Enum.random(1..200)
   end
 end
