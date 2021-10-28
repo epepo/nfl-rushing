@@ -7,46 +7,7 @@ defmodule NFLRushing.Stats.Entry do
 
   import Ecto.Changeset
 
-  @type t :: %__MODULE__{
-          player: String.t(),
-          position: String.t(),
-          team: String.t(),
-          rushing_attempts_per_game_average: number(),
-          rushing_attempts: integer(),
-          total_rushing_yards: number(),
-          rushing_average_yards_per_attempt: number(),
-          rushing_yards_per_game: number(),
-          total_rushing_touchdowns: integer(),
-          longest_rush: number(),
-          touchdown_on_longest_rush: boolean(),
-          rushing_first_downs: integer(),
-          rushing_first_downs_percentage: number(),
-          rushing_20_plus_yards_each: integer(),
-          rushing_40_plus_yards_each: integer(),
-          rushing_fumbles: integer(),
-          inserted_at: NaiveDateTime.t(),
-          updated_at: NaiveDateTime.t()
-        }
-
-  @fields [
-    :player,
-    :position,
-    :team,
-    :rushing_attempts_per_game_average,
-    :rushing_attempts,
-    :total_rushing_yards,
-    :rushing_average_yards_per_attempt,
-    :rushing_yards_per_game,
-    :total_rushing_touchdowns,
-    :longest_rush,
-    :touchdown_on_longest_rush,
-    :rushing_first_downs,
-    :rushing_first_downs_percentage,
-    :rushing_20_plus_yards_each,
-    :rushing_40_plus_yards_each,
-    :rushing_fumbles
-  ]
-  @required_fields @fields
+  @type t :: %__MODULE__{}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -76,7 +37,9 @@ defmodule NFLRushing.Stats.Entry do
   @doc false
   def changeset(entry, attrs) do
     entry
-    |> cast(attrs, @fields)
-    |> validate_required(@required_fields)
+    |> cast(attrs, fields())
+    |> validate_required(fields())
   end
+
+  defp fields, do: __schema__(:fields) -- [:id, :inserted_at, :updated_at]
 end
