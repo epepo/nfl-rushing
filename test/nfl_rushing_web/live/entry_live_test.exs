@@ -44,5 +44,29 @@ defmodule NFLRushingWeb.EntryLiveTest do
       assert has_element?(live, "tbody > tr:nth-child(2) > td:first-child()", second_entry.player)
       assert has_element?(live, "tbody > tr:nth-child(3) > td:first-child()", last_entry.player)
     end
+
+    test "allows exporting data respecting filtering and ordering", %{conn: conn} do
+      {:ok, live, _html} = live(conn, Routes.entry_index_path(conn, :index))
+
+      live
+      |> element(~s|*[phx-value-column="rushing_attempts"]|)
+      |> render_click()
+
+      live
+      |> form("#filters", filters: %{player: "target"})
+      |> render_change()
+
+      live
+      |> element("a", "Export")
+      |> render_click()
+
+      assert_redirect(
+        live,
+        Routes.export_path(conn, :show, %{
+          "order_by" => "asc:rushing_attempts",
+          "player" => "target"
+        })
+      )
+    end
   end
 end

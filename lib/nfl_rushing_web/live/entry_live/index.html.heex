@@ -4,7 +4,12 @@
       <%= text_input f, :player, placeholder: "Find player", value: @player_filter %>
     </.form>
 
-    <button phx-click="export">Export</button>
+    <%=
+      link "Export",
+           to: Routes.export_path(@socket, :show, export_params(@player_filter, @order_by)),
+           class: "button",
+           download: true
+    %>
   </section>
 
   <table>

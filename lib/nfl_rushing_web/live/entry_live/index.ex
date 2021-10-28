@@ -6,9 +6,8 @@ defmodule NFLRushingWeb.EntryLive.Index do
 
   use NFLRushingWeb, :live_view
 
+  alias NFLRushing.Exporter
   alias NFLRushing.Stats
-
-  require Logger
 
   @columns [
     %{name: :player, text: "Player"},
@@ -54,8 +53,15 @@ defmodule NFLRushingWeb.EntryLive.Index do
     {:noreply, socket}
   end
 
-  def handle_event("export", _params, socket) do
-    Logger.info("Export action called")
+  def handle_event(
+        "export",
+        _params,
+        socket = %{assigns: %{player_filter: player_filter, order_by: order_by}}
+      ) do
+    player_filter
+    |> listing_options(order_by)
+    |> Stats.list_entries()
+    |> Exporter.to_csv()
 
     {:noreply, socket}
   end
@@ -85,13 +91,18 @@ defmodule NFLRushingWeb.EntryLive.Index do
 
   defp apply_filters(socket = %{assigns: %{player_filter: player_filter, order_by: order_by}}) do
     rows =
-      [filters: %{player: player_filter}, order_by: order_by]
+      player_filter
+      |> listing_options(order_by)
       |> Stats.list_entries()
       |> build_table_rows()
 
     socket
     |> assign(columns: @columns)
     |> assign(rows: rows)
+  end
+
+  defp listing_options(player_filter, order_by) do
+    [filters: %{player: player_filter}, order_by: order_by]
   end
 
   defp build_table_rows(entries) do
@@ -108,4 +119,8 @@ defmodule NFLRushingWeb.EntryLive.Index do
   defp sort_indicator(name, {:asc, name}), do: "▲"
   defp sort_indicator(name, {:desc, name}), do: "▼"
   defp sort_indicator(_name, _sort), do: ""
+
+  defp export_params(player_filter, {order, field}) do
+    %{"player" => player_filter, "order_by" => "#{to_string(order)}:#{field}"}
+  end
 end
