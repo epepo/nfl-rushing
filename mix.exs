@@ -49,7 +49,8 @@ defmodule NFLRushing.MixProject do
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       {:sobelow, "~> 0.11.1", only: [:dev, :test], runtime: false},
       {:faker, "~> 0.16.0", only: [:dev, :test]},
-      {:nimble_csv, "~> 1.1"}
+      {:nimble_csv, "~> 1.1"},
+      {:scrivener_ecto, "~> 2.0"}
     ]
   end
 
