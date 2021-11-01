@@ -29,12 +29,12 @@ defmodule NFLRushing.Exporter do
   @rows Enum.map(@definitions, & &1.field)
 
   @doc """
-  Exports a list of Entries to CSV.
+  Exports a list of Entries to CSV. Returns an iodata Stream.
   """
-  @spec to_csv([Entry.t()]) :: iodata()
-  def to_csv(entries) do
+  @spec to_csv_stream([Entry.t()]) :: Enum.t()
+  def to_csv_stream(entries) do
     row_data =
-      Enum.map(entries, fn entry ->
+      Stream.map(entries, fn entry ->
         longest_rush = "#{entry.longest_rush}#{if(entry.touchdown_on_longest_rush, do: "T")}"
 
         Enum.map(@rows, fn
@@ -43,6 +43,6 @@ defmodule NFLRushing.Exporter do
         end)
       end)
 
-    CSV.dump_to_iodata([@columns | row_data])
+    CSV.dump_to_stream(Stream.concat([@columns], row_data))
   end
 end

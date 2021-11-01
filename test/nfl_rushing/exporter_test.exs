@@ -5,13 +5,14 @@ defmodule NFLRushing.ExporterTest do
 
   alias NFLRushing.Exporter
 
-  describe "to_csv/1" do
+  describe "to_csv_stream/1" do
     test "renders entries as expected" do
       entries = for _i <- 1..3, do: entry_fixture()
 
       csv =
         entries
-        |> Exporter.to_csv()
+        |> Exporter.to_csv_stream()
+        |> Enum.into([])
         |> IO.iodata_to_binary()
 
       for entry <- entries do
@@ -21,7 +22,8 @@ defmodule NFLRushing.ExporterTest do
 
     test "renders only columns if no entries are provided" do
       assert []
-             |> Exporter.to_csv()
+             |> Exporter.to_csv_stream()
+             |> Enum.into([])
              |> IO.iodata_to_binary()
              |> String.split()
              |> Enum.count() == 1
