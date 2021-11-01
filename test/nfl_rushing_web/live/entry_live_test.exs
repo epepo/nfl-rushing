@@ -40,9 +40,9 @@ defmodule NFLRushingWeb.EntryLiveTest do
       |> element(~s|*[phx-value-column="rushing_attempts"]|)
       |> render_click()
 
-      assert has_element?(live, "tbody > tr:nth-child(1) > td:first-child()", first_entry.player)
-      assert has_element?(live, "tbody > tr:nth-child(2) > td:first-child()", second_entry.player)
-      assert has_element?(live, "tbody > tr:nth-child(3) > td:first-child()", last_entry.player)
+      assert has_element?(live, "tr:nth-child(1) > td:first-child()", first_entry.player)
+      assert has_element?(live, "tr:nth-child(2) > td:first-child()", second_entry.player)
+      assert has_element?(live, "tr:nth-child(3) > td:first-child()", last_entry.player)
     end
 
     test "allows exporting data respecting filtering and ordering", %{conn: conn} do
@@ -67,6 +67,25 @@ defmodule NFLRushingWeb.EntryLiveTest do
           "player" => "target"
         })
       )
+    end
+
+    test "allows changing pages", %{conn: conn} do
+      for _i <- 1..30, do: entry_fixture()
+
+      {:ok, live, _html} = live(conn, Routes.entry_index_path(conn, :index))
+
+      previous_player =
+        live
+        |> element("tr:nth-child(1) > td:nth-child(1)")
+        |> render()
+
+      live
+      |> element("button", "Next")
+      |> render_click()
+
+      assert live
+             |> element("tr:nth-child(1) > td:nth-child(1)")
+             |> render() != previous_player
     end
   end
 end

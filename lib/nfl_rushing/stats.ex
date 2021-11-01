@@ -8,43 +8,83 @@ defmodule NFLRushing.Stats do
   alias NFLRushing.Repo
   alias NFLRushing.Stats.Entry
 
-  @type order_by :: {:asc | :desc, atom()}
-  @type filters :: %{optional(atom()) => String.t()}
+  @default_filters %{}
+  @default_order_by {:asc, :player}
+  @default_pagination %{page: 1, page_size: 20}
 
-  @type listing_opts :: [filters: filters(), order_by: order_by()]
+  @type order_by :: {:asc | :desc, field :: atom()}
+  @type filters :: %{optional(atom()) => String.t()}
+  @type pagination_opts :: %{page: non_neg_integer(), page_size: non_neg_integer()}
+
+  @type page(item) :: %Scrivener.Page{
+          entries: [item],
+          page_number: pos_integer(),
+          page_size: non_neg_integer(),
+          total_entries: non_neg_integer(),
+          total_pages: non_neg_integer()
+        }
+
+  @typedoc """
+  Options for operations that list Entries.
+
+  Default values:
+
+  `:filters` is `#{inspect(@default_filters)}`;
+  `:order_by` is `#{inspect(@default_order_by)}`;
+  `:pagination` is `#{inspect(@default_pagination)}`.
+
+  Note: `:pagination`'s page is one-based.
+  """
+  @type listing_opts :: [
+          filters: filters(),
+          order_by: order_by(),
+          pagination: pagination_opts()
+        ]
 
   @doc """
-  Returns the list of entries.
+  Fetches a page of Entries.
+  """
+  @spec fetch_entries_page(listing_opts()) :: page(Entry.t())
+  def fetch_entries_page(opts \\ []) do
+    parsed_opts = get_options(opts)
 
-  Filters can be specified by supplying a map with Entry data to the
-  `:filters` key in `opts`.
-  Ordering can be specified by supplying a tuple to the `:order_by` key.
+    parsed_opts
+    |> entries_query()
+    |> Repo.paginate(parsed_opts.pagination)
+  end
 
-  Default filtering is none and default ordering is ascending by `:player`.
+  @doc """
+  Fetches a list of Entries.
 
-  ## Examples
-
-      iex> list_entries()
-      [%Entry{}, ...]
-
-      iex> list_entries(filters: %{player: "Joe"})
-      [%Entry{player: "Joe First"}, %Entry{player: "Joe Second"}, ...]
-
-      iex> list_entries(order_by: {:asc, :player})
-      [%Entry{player: "Player A"}, %Entry{player: "Player B"}, ...]
+  This function respects `opts` except for the `:pagination` option.
   """
   @spec list_entries(listing_opts()) :: [Entry.t()]
   def list_entries(opts \\ []) do
-    filters = Keyword.get(opts, :filters, %{})
-    order_by = Keyword.get(opts, :order_by, {:asc, :player})
+    parsed_opts = get_options(opts)
 
-    query =
-      Entry
-      |> from()
-      |> apply_filters(filters)
-      |> apply_sorting(order_by)
+    parsed_opts
+    |> entries_query()
+    |> Repo.all()
+  end
 
-    Repo.all(query)
+  defp get_options(opts) do
+    filters = Keyword.get(opts, :filters, @default_filters)
+    order_by = Keyword.get(opts, :order_by, @default_order_by)
+
+    pagination = Keyword.get(opts, :pagination, %{})
+
+    %{
+      filters: filters,
+      order_by: order_by,
+      pagination: Map.merge(@default_pagination, pagination)
+    }
+  end
+
+  defp entries_query(%{filters: filters, order_by: order_by}) do
+    Entry
+    |> from()
+    |> apply_filters(filters)
+    |> apply_sorting(order_by)
   end
 
   defp apply_filters(query, filters) do
@@ -58,7 +98,14 @@ defmodule NFLRushing.Stats do
     end
   end
 
-  defp safe_ilike_exp(value), do: "%#{String.replace(value, "%", "\\%")}%"
+  defp safe_ilike_exp(value) do
+    value =
+      value
+      |> String.replace("%", "\\%")
+      |> String.replace("_", "\\_")
+
+    "%#{value}%"
+  end
 
   defp apply_sorting(query, {order, name}) do
     order_by(query, [entry], [{^order, field(entry, ^name)}])

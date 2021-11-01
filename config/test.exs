@@ -6,7 +6,8 @@ config :nfl_rushing, NFLRushing.Repo,
   database: "nfl_rushing_test#{System.get_env("MIX_TEST_PARTITION")}",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox,
-  pool_size: 10
+  pool_size: 10,
+  ownership_timeout: :infinity
 
 config :nfl_rushing, NFLRushingWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],

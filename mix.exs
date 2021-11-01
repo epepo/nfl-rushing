@@ -25,6 +25,7 @@ defmodule NFLRushing.MixProject do
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib", "test/support/fixtures"]
   defp elixirc_paths(_), do: ["lib"]
 
   defp deps do
@@ -49,7 +50,9 @@ defmodule NFLRushing.MixProject do
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       {:sobelow, "~> 0.11.1", only: [:dev, :test], runtime: false},
       {:faker, "~> 0.16.0", only: [:dev, :test]},
-      {:nimble_csv, "~> 1.1"}
+      {:nimble_csv, "~> 1.1"},
+      {:scrivener_ecto, "~> 2.0"},
+      {:benchee, "~> 1.0", only: :test}
     ]
   end
 

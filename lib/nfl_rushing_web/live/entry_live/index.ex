@@ -6,7 +6,6 @@ defmodule NFLRushingWeb.EntryLive.Index do
 
   use NFLRushingWeb, :live_view
 
-  alias NFLRushing.Exporter
   alias NFLRushing.Stats
 
   @columns [
@@ -29,6 +28,8 @@ defmodule NFLRushingWeb.EntryLive.Index do
 
   @row_items Enum.map(@columns, & &1.name)
 
+  @page_size 20
+
   @impl true
   def mount(_params, _session, socket) do
     socket =
@@ -36,32 +37,46 @@ defmodule NFLRushingWeb.EntryLive.Index do
       |> assign(page_title: "Stats Entries")
       |> assign(player_filter: "")
       |> assign(order_by: {:asc, :player})
-      |> apply_filters()
+      |> assign(pagination: %{page: 0})
+      |> fetch_entries()
 
     {:ok, socket}
   end
 
   @impl true
-  def handle_event(event, unsigmned_params, socket)
+  def handle_event(event, unsigned_params, socket)
 
   def handle_event("update_filters", %{"filters" => %{"player" => player}}, socket) do
     socket =
       socket
       |> assign(player_filter: player)
-      |> apply_filters()
+      |> fetch_entries()
 
     {:noreply, socket}
   end
 
   def handle_event(
-        "export",
-        _params,
-        socket = %{assigns: %{player_filter: player_filter, order_by: order_by}}
+        "next_page",
+        _unsigned_params,
+        socket = %{assigns: %{pagination: pagination}}
       ) do
-    player_filter
-    |> listing_options(order_by)
-    |> Stats.list_entries()
-    |> Exporter.to_csv()
+    socket =
+      socket
+      |> assign(pagination: update_in(pagination[:page], &(&1 + 1)))
+      |> fetch_entries()
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "previous_page",
+        _unsigned_params,
+        socket = %{assigns: %{pagination: pagination}}
+      ) do
+    socket =
+      socket
+      |> assign(pagination: update_in(pagination[:page], &(&1 - 1)))
+      |> fetch_entries()
 
     {:noreply, socket}
   end
@@ -81,7 +96,8 @@ defmodule NFLRushingWeb.EntryLive.Index do
     socket =
       socket
       |> assign(order_by: order_by)
-      |> apply_filters()
+      |> assign(current_page: 0)
+      |> fetch_entries()
 
     {:noreply, socket}
   end
@@ -89,20 +105,34 @@ defmodule NFLRushingWeb.EntryLive.Index do
   defp next_order(:asc), do: :desc
   defp next_order(:desc), do: :asc
 
-  defp apply_filters(socket = %{assigns: %{player_filter: player_filter, order_by: order_by}}) do
-    rows =
-      player_filter
-      |> listing_options(order_by)
-      |> Stats.list_entries()
-      |> build_table_rows()
+  defp fetch_entries(
+         socket = %{
+           assigns: %{
+             player_filter: player_filter,
+             order_by: order_by,
+             pagination: pagination
+           }
+         }
+       ) do
+    page =
+      Stats.fetch_entries_page(
+        filters: %{player: player_filter},
+        order_by: order_by,
+        pagination: %{page: pagination.page, page_size: @page_size}
+      )
+
+    rows = build_table_rows(page.entries)
 
     socket
     |> assign(columns: @columns)
     |> assign(rows: rows)
-  end
-
-  defp listing_options(player_filter, order_by) do
-    [filters: %{player: player_filter}, order_by: order_by]
+    |> assign(
+      pagination: %{
+        page: page.page_number,
+        total_entries: page.total_entries,
+        total_pages: page.total_pages
+      }
+    )
   end
 
   defp build_table_rows(entries) do

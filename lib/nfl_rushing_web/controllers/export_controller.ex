@@ -16,9 +16,13 @@ defmodule NFLRushingWeb.ExportController do
           player
           |> build_opts(order_by)
           |> Stats.list_entries()
-          |> Exporter.to_csv()
+          |> Exporter.to_csv_stream()
 
-        send_download(conn, {:binary, data}, filename: @filename)
+        conn
+        |> put_resp_header("content-disposition", "attachment; filename=\"#{@filename}\"")
+        |> put_resp_header("content-type", "text/csv")
+        |> send_chunked(200)
+        |> stream_data(data)
 
       {:error, reason} ->
         send_resp(conn, reason, "")
@@ -45,5 +49,17 @@ defmodule NFLRushingWeb.ExportController do
     else
       opts
     end
+  end
+
+  defp stream_data(conn, data) do
+    Enum.reduce_while(data, conn, fn part, conn ->
+      case chunk(conn, part) do
+        {:ok, conn} ->
+          {:cont, conn}
+
+        {:error, :closed} ->
+          {:halt, conn}
+      end
+    end)
   end
 end

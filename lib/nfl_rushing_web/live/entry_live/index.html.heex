@@ -1,15 +1,19 @@
 <section class="flex flex-col w-full gap-2">
-  <section class="flex justify-between gap-2">
-    <.form id="filters" let={f} for={:filters} phx-change="update_filters" class="flex items-center gap-2">
+  <section class="grid grid-cols-5">
+    <.form id="filters" let={f} for={:filters} phx-change="update_filters" class="flex items-center gap-2 col-span-2">
       <%= text_input f, :player, placeholder: "Find player", value: @player_filter %>
     </.form>
+
+    <div class="mx-auto whitespace-nowrap">
+      <p class="py-0 my-0 border-b border-gray-600">Found <%= @pagination.total_entries %> entries</p>
+    </div>
 
     <%=
       link "Export",
            to: Routes.export_path(@socket, :show, export_params(@player_filter, @order_by)),
-           class: "button",
+           class: "button col-start-5 w-min place-self-end",
            download: true
-    %>
+      %>
   </section>
 
   <table>
@@ -37,4 +41,12 @@
       <% end %>
     </tbody>
   </table>
+
+  <div class="flex">
+    <button phx-click="previous_page" class="rounded-l border border-black py-1 px-2">Prev</button>
+    <div class="border-t border-b border-black py-1 px-2">
+      <span class="cursor-default"><%= @pagination.page %> / <%= @pagination.total_pages %></span>
+    </div>
+    <button phx-click="next_page" class="rounded-r border border-black py-1 px-2">Next</button>
+  </div>
 </section>
