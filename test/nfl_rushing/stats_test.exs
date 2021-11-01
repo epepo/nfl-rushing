@@ -77,6 +77,18 @@ defmodule NFLRushing.StatsTest do
 
       assert length(page.entries) == 5
     end
+
+    test "doesn't allow `_` LIKE injection" do
+      entry_fixture(player: "Person")
+
+      assert %{entries: []} = Stats.fetch_entries_page(filters: %{player: "Per_on"})
+    end
+
+    test "doesn't allow `%` LIKE injection" do
+      entry_fixture(player: "Person")
+
+      assert %{entries: []} = Stats.fetch_entries_page(filters: %{player: "Per%"})
+    end
   end
 
   describe "list_entries/1" do
@@ -121,6 +133,18 @@ defmodule NFLRushing.StatsTest do
                second_entry,
                last_entry
              ]
+    end
+
+    test "doesn't allow `_` LIKE injection" do
+      entry_fixture(player: "Person")
+
+      assert Stats.list_entries(filters: %{player: "Per_on"}) == []
+    end
+
+    test "doesn't allow `%` LIKE injection" do
+      entry_fixture(player: "Person")
+
+      assert Stats.list_entries(filters: %{player: "Per%"}) == []
     end
   end
 end

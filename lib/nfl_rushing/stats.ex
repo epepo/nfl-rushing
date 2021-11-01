@@ -98,7 +98,14 @@ defmodule NFLRushing.Stats do
     end
   end
 
-  defp safe_ilike_exp(value), do: "%#{String.replace(value, "%", "\\%")}%"
+  defp safe_ilike_exp(value) do
+    value =
+      value
+      |> String.replace("%", "\\%")
+      |> String.replace("_", "\\_")
+
+    "%#{value}%"
+  end
 
   defp apply_sorting(query, {order, name}) do
     order_by(query, [entry], [{^order, field(entry, ^name)}])
