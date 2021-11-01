@@ -43,14 +43,15 @@ This solution requires the following software:
 
 - Erlang OTP 24
 - Elixir 1.12 or greater
-- Postgres 11 or greater
+- Postgres 12 or greater
+- NodeJS 16.13
 
 Compatible versions of Erlang and Elixir are configured via [`asdf-vm`](https://github.com/asdf-vm/asdf)'s `.tool-versions` for convenience.
 Postgres is expected to be running on `localhost:5432` with `postgres:postgres` as credentials for the development environment; other environments can be configured on their respective `config/$ENV.exs` file as per Elixir's conventions.
 
 The following commands will run an interactive IEx shell with a development server:
 ```sh
-$ mix deps.get
+$ mix deps.get && npm i --prefix=assets
 $ mix ecto.setup
 $ iex -S mix phx.server
 ```
