@@ -5,6 +5,41 @@ defmodule NFLRushing.StatsTest do
 
   alias NFLRushing.Stats
 
+  describe "fetch_teams_data/0" do
+    test "works with no data" do
+      assert Stats.fetch_teams_data() == []
+    end
+
+    test "computes values of existing entries" do
+      team_a_entry = entry_fixture(team: "Team A")
+
+      team_b_first_entry =
+        entry_fixture(
+          team: "Team B",
+          total_rushing_yards: 10,
+          longest_rush: 20
+        )
+
+      team_b_second_entry =
+        entry_fixture(
+          team: "Team B",
+          total_rushing_yards: 5,
+          longest_rush: 10
+        )
+
+      assert [team_a, team_b] = Stats.fetch_teams_data()
+
+      assert team_a.average_longest_rush == team_a_entry.longest_rush
+      assert team_a.sum_of_total_rushing_yards == team_a_entry.total_rushing_yards
+
+      assert team_b.average_longest_rush ==
+               (team_b_first_entry.longest_rush + team_b_second_entry.longest_rush) / 2
+
+      assert team_b.sum_of_total_rushing_yards ==
+               team_b_first_entry.total_rushing_yards + team_b_second_entry.total_rushing_yards
+    end
+  end
+
   describe "fetch_entries_page/1" do
     test "returns a page with all entries" do
       entries = for _i <- 1..3, do: entry_fixture()

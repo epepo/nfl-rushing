@@ -41,6 +41,22 @@ defmodule NFLRushing.Stats do
           pagination: pagination_opts()
         ]
 
+  def fetch_teams_data do
+    Repo.all(teams_query())
+  end
+
+  defp teams_query do
+    Entry
+    |> from()
+    |> group_by([entry], entry.team)
+    |> select([entry], %{
+      team: entry.team,
+      sum_of_total_rushing_yards: sum(entry.total_rushing_yards),
+      average_longest_rush: avg(entry.longest_rush)
+    })
+    |> order_by([entry], entry.team)
+  end
+
   @doc """
   Fetches a page of Entries.
   """

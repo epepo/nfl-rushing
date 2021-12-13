@@ -19,6 +19,7 @@ defmodule NFLRushingWeb.Router do
     pipe_through :browser
 
     live "/", EntryLive.Index, :index
+    live "/teams", TeamLive.Index, :index
     get "/export", ExportController, :show
   end
 

@@ -1,0 +1,20 @@
+<section class="flex flex-col w-full gap-2">
+  <table>
+    <thead>
+      <tr>
+        <th>Team</th>
+        <th>Sum of Total Yards</th>
+        <th>Average Longest Rush</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for row <- @rows do %>
+          <tr>
+            <td><%= row.team %></td>
+            <td><%= row.sum_of_total_rushing_yards %></td>
+            <td><%= row.average_longest_rush %></td>
+          </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>
